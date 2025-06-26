@@ -33,6 +33,19 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      
+  mongo-express:
+    image: mongo-express:latest
+    container_name: direct_messenger_mongo_express
+    restart: unless-stopped
+    ports:
+      - '8081:8081'
+    env_file:
+      - .env
+    environment:
+      ME_CONFIG_MONGODB_URL: ${MONGO_URI}
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
 
 volumes:
   mongo_data:
