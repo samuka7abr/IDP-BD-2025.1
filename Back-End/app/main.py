@@ -2,10 +2,12 @@ from flask import Flask, jsonify
 from dotenv import load_dotenv
 import os
 from pymongo import MongoClient
+from routes.users import users_bp
 
 load_dotenv()
 
 app = Flask(__name__)
+app.register_blueprint(users_bp)
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
 
 mongo_uri = os.getenv('MONGO_URI')
