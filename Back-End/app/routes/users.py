@@ -17,3 +17,30 @@ def create_user():
         'contacts': []
     })
     return jsonify({'message': 'usuário criado com sucesso'}), 201
+
+@users_bp.route('/users/<username>', methods=['GET'])
+def get_user(username):
+    db = get_db()
+    user = db.users.find_one(
+        {'username': username},
+        {'_id': 0, 'username': 1, 'name': 1}
+    )
+    if not user:
+        return jsonify({'error': 'usuário não encontrado'}), 404
+    return jsonify(user), 200
+
+@users_bp.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    if not data.get('username'):
+        return jsonify({'error': 'username é obrigatório'}), 400
+    
+    db = get_db()
+    user = db.users.find_one({'username': data['username']})
+    if not user:
+        return jsonify({'error': 'usuário não encontrado'}), 404
+    
+    return jsonify({
+        'username': user['username'],
+        'name': user['name']
+    }), 200

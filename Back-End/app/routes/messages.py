@@ -25,3 +25,20 @@ def get_history(chat_id):
     for m in msgs:
         m['_id'] = str(m['_id'])
     return jsonify(msgs), 200
+
+@messages_bp.route('/chats/<username>', methods=['GET'])
+def get_user_chats(username):
+    db = get_db()
+    
+    user = db.users.find_one({'username': username})
+    if not user:
+        return jsonify({'error': 'usuário não encontrado'}), 404
+    
+    contacts = user.get('contacts', [])
+    chats = []
+    
+    for contact in contacts:
+        chat_id = '_'.join(sorted([username, contact]))
+        chats.append(chat_id)
+    
+    return jsonify(chats), 200

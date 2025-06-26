@@ -8,6 +8,11 @@ services:
       - mongo_data:/data/db
     ports:
       - '27017:27017'
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -17,8 +22,13 @@ services:
       - '5672:5672'
       - '15672:15672'
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-admin123}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build:
@@ -31,8 +41,10 @@ services:
     ports:
       - '5000:5000'
     depends_on:
-      - mongo
-      - rabbitmq
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./app:/app
 
@@ -45,9 +57,12 @@ services:
     env_file:
       - .env
     environment:
-      ME_CONFIG_MONGODB_URL: ${MONGO_URI}
-      ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
-      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
+      ME_CONFIG_MONGODB_URL: ${MONGO_URI:-mongodb://mongo:27017/direct_messenger}
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD:-admin123}
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   consumer:
     build:
@@ -55,11 +70,13 @@ services:
     command: python consumer.py
     container_name: direct_messenger_consumer
     restart: unless-stopped
-    depends_on:
-      - mongo
-      - rabbitmq
     env_file:
       - .env
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
 volumes:
   mongo_data:

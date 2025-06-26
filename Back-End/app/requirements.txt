@@ -2,3 +2,4 @@ flask
 pymongo
 pika
 python-dotenv
+flask-socketio
