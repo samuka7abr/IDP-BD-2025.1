@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from services.rabbitmq_service import publish_message
 from services.mongo_service import get_db
-from datetime import datetime
+from datetime import datetime, timezone
 
 messages_bp = Blueprint('messages', __name__)
 
@@ -12,7 +12,7 @@ def send_message():
         if field not in data:
             return jsonify({'error': f'{field} é obrigatório'}), 400
 
-    data['timestamp'] = datetime.datetime.utcnow().isoformat()
+    data['timestamp'] = datetime.now(timezone.utc).isoformat()
     publish_message(data)
     return jsonify({'message': 'mensagem enfileirada'}), 202
 

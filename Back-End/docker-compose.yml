@@ -33,7 +33,9 @@ services:
     depends_on:
       - mongo
       - rabbitmq
-      
+    volumes:
+      - ./app:/app
+
   mongo-express:
     image: mongo-express:latest
     container_name: direct_messenger_mongo_express
@@ -46,6 +48,18 @@ services:
       ME_CONFIG_MONGODB_URL: ${MONGO_URI}
       ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
       ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
+
+  consumer:
+    build:
+      context: ./app
+    command: python consumer.py
+    container_name: direct_messenger_consumer
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - rabbitmq
+    env_file:
+      - .env
 
 volumes:
   mongo_data:
