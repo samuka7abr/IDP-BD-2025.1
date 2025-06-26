@@ -1,0 +1,4 @@
+flask
+pymongo
+pika
+python-dotenv
