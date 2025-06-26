@@ -24,9 +24,68 @@ Componente de mensageria da rede social **IDP-Connections**, que permite troca d
 - JavaScript  
 - HTML & CSS  
 
-## Repositório
+## Passos para Iniciar o Projeto
 
-[https://github.com/samuka7abr/IDP-BD-2025.1](https://github.com/samuka7abr/IDP-BD-2025.1)
+### 1. Clone o Repositório
+
+Abra seu terminal ou prompt de comando e execute:
+
+```bash
+git clone https://github.com/samuka7abr/IDP-BD-2025.1.git
+cd IDP-BD-2025.1/IDP-Mensager
+```
+
+---
+
+### 2. Configure Variáveis de Ambiente
+
+O projeto utiliza variáveis de ambiente para suas configurações. Copie o arquivo `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Abra o arquivo `.env` copiado em seu editor de texto e ajuste as variáveis conforme necessário:
+
+- `MONGO_URI`
+- `RABBITMQ_USER`
+- `RABBITMQ_PASS`
+- *(entre outras)*
+
+---
+
+### 3. Suba os Containers
+
+Com as variáveis de ambiente configuradas, inicie todos os serviços do projeto com Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Este comando irá:
+
+- Construir as imagens Docker (caso não existam ou tenham sido alteradas);
+- Orquestrar e iniciar os seguintes serviços:
+  - **MongoDB**: Banco de dados principal;
+  - **RabbitMQ**: Broker de mensagens;
+  - **API Flask**: Aplicação principal acessível via `http://localhost:5000`;
+  - **Consumer**: Serviço que processa mensagens do RabbitMQ;
+  - **Mongo Express** *(opcional)*: GUI acessível via `http://localhost:8081`.
+
+---
+
+### 4. Acesse a Aplicação
+
+Com os containers em execução, acesse a aplicação pelo navegador:
+
+```
+http://localhost:5000/
+```
+
+Você será direcionado para a **tela de login**. Após o login, a interface de chat ficará disponível para uso.
+
+---
+
 
 ## Exemplos de Telas
 
@@ -35,3 +94,10 @@ Componente de mensageria da rede social **IDP-Connections**, que permite troca d
 
 ### Chat / Mensagens  
 ![Mensagens](assets/mensagens.png)
+
+## Repositório
+
+[https://github.com/samuka7abr/IDP-BD-2025.1](https://github.com/samuka7abr/IDP-BD-2025.1)
+
+
+### IDP 
