@@ -95,6 +95,10 @@ Você será direcionado para a **tela de login**. Após o login, a interface de 
 ### Chat / Mensagens  
 ![Mensagens](assets/mensagens.png)
 
+### Documentação Insomnia:
+A documentação se encontra [aqui](DocsInsomnia.json).
+
+
 ## Repositório
 
 [https://github.com/samuka7abr/IDP-BD-2025.1](https://github.com/samuka7abr/IDP-BD-2025.1)
